@@ -1,0 +1,47 @@
+server:
+  port: 5445
+
+spring:
+  application:
+    name: mkbd_gen
+
+  threads:
+    virtual:
+      enable: true
+
+  oracle:
+    datasource:
+      url: jdbc:oracle:thin:@10.10.1.173:1521:DEVDBA
+      username: MKBD
+      password: mkbdpassword
+      driverClassName: oracle.jdbc.OracleDriver
+      hikari:
+        validation-timeout: 5000
+        connection-init-sql: "ALTER SESSION SET CURRENT_SCHEMA=MKBD"
+        maximum-pool-size: 20
+        minimum-idle: 5
+        idle-timeout: 600000 # 10 minutes
+        pool-name: ORACLE_BO_HIKARI_CP
+        max-lifetime: 1800000 # 30 minutes
+        connection-timeout: 30000
+        leak-detection-threshold: 60000
+        connection-test-query: select 1 from dual
+    jpa:
+      show-sql: true
+      open-in-view: false
+      hibernate:
+        ddl-auto: none
+        format-sql: true
+        batch-size: 100
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.zaxxer.hikari.HikariDataSource: DEBUG
+    oracle.jdbc: TRACE
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /docs.html
