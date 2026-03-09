@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ciptadana</groupId>
-	<artifactId>mkbd_gen</artifactId>
+	<artifactId>mkbd_master_menu</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mkbd_gen</name>
+	<name>mkbd_master_menu</name>
 	<description>Generate MKBD</description>
 	<url/>
 	<licenses>

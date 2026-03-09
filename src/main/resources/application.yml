@@ -1,9 +1,13 @@
 server:
-  port: 5445
+  port: 9090
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/json,application/xml,text/html,text/plain
 
 spring:
   application:
-    name: mkbd_gen
+    name: mkbd_master_menu
 
   threads:
     virtual:
@@ -12,27 +16,31 @@ spring:
   oracle:
     datasource:
       url: jdbc:oracle:thin:@10.10.1.173:1521:DEVDBA
-      username: MKBD
-      password: mkbdpassword
+      username: denpasar
+      password: password
       driverClassName: oracle.jdbc.OracleDriver
       hikari:
-        validation-timeout: 5000
-        connection-init-sql: "ALTER SESSION SET CURRENT_SCHEMA=MKBD"
-        maximum-pool-size: 20
-        minimum-idle: 5
-        idle-timeout: 600000 # 10 minutes
+        maximum-pool-size: 5  # Increased pool size for better concurrency
+        minimum-idle: 1        # More idle connections for quick response
+        idle-timeout: 30000  # Reduced to 30 seconds
         pool-name: ORACLE_BO_HIKARI_CP
-        max-lifetime: 1800000 # 30 minutes
-        connection-timeout: 30000
-        leak-detection-threshold: 60000
-        connection-test-query: select 1 from dual
+        connection-timeout: 20000  # Reduced to 20 seconds
+        max-lifetime: 900000       # Reduced to 15 minutes
+        leak-detection-threshold: 30000  # Reduced to 2 seconds for more immediate detection
+        connection-test-query: SELECT 1 FROM DUAL
+        auto-commit: false        # Ensure transactions are explicitly committed
+        validation-timeout: 5000   # Timeout for connection validation
     jpa:
       show-sql: true
       open-in-view: false
       hibernate:
         ddl-auto: none
         format-sql: true
-        batch-size: 100
+        batch-size: 5000
+      properties:
+        hibernate.jdbc.lob.non_contextual_creation: true  # Fix for LOB issues
+        hibernate.order_updates: true  # Optimize update queries
+        hibernate.order_inserts: true  # Optimize insert queries
 
 logging:
   level:
