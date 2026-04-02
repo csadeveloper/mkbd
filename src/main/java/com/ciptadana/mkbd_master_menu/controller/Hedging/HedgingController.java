@@ -34,9 +34,9 @@ public class HedgingController {
 
     @PostMapping("hedging/insert")
     public ResponseEntity<String> insertHedging(
-            @RequestBody HedgingInsertRequest request
+            @RequestBody List<HedgingInsertRequest> requests
     ) {
-        hedgingService.insertHedging(request);
+        hedgingService.insertHedging(requests);
         return ResponseEntity.ok("Data Hedging berhasil disimpan");
     }
 

@@ -27,9 +27,9 @@ public class ReverseRepoController {
 
     @PostMapping("reverseRepo/insert")
     public ResponseEntity<String> insertReverseRepo(
-            @RequestBody ReverseRepoInsertRequest request
+            @RequestBody List<ReverseRepoInsertRequest> requests
     ) {
-        reverseRepoService.insertReverseRepo(request);
+        reverseRepoService.insertReverseRepo(requests);
         return ResponseEntity.ok("Data Reverse Repo berhasil disimpan");
     }
 

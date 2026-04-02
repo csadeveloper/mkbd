@@ -20,13 +20,14 @@ spring:
       password: password
       driverClassName: oracle.jdbc.OracleDriver
       hikari:
-        maximum-pool-size: 5  # Increased pool size for better concurrency
-        minimum-idle: 1        # More idle connections for quick response
-        idle-timeout: 30000  # Reduced to 30 seconds
+        maximum-pool-size: 10  # Increased pool size for better concurrency
+        minimum-idle: 2        # More idle connections for quick response
+        idle-timeout: 120000   # 2 minutes idle timeout
         pool-name: ORACLE_BO_HIKARI_CP
-        connection-timeout: 20000  # Reduced to 20 seconds
-        max-lifetime: 900000       # Reduced to 15 minutes
-        leak-detection-threshold: 30000  # Reduced to 2 seconds for more immediate detection
+        connection-timeout: 20000  # 20 seconds to get connection from pool
+        max-lifetime: 600000       # 10 minutes - must be less than Oracle session timeout
+        keepalive-time: 60000      # Ping idle connections every 60 seconds to prevent DB/firewall killing them
+        leak-detection-threshold: 30000  # 30 seconds leak detection
         connection-test-query: SELECT 1 FROM DUAL
         auto-commit: false        # Ensure transactions are explicitly committed
         validation-timeout: 5000   # Timeout for connection validation

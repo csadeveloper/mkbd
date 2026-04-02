@@ -28,12 +28,6 @@ public class RepoController {
         return ResponseEntity.ok(repoService.getRepoList(date));
     }
 
-    @GetMapping("repo/counterparty/name")
-    public ResponseEntity<List<RepoCounterPartyResponse>> getRepoCounterPartyByName(
-            @RequestParam("name") String name) {
-        return ResponseEntity.ok(repoService.getRepoCounterPartyByName(name));
-    }
-
     @GetMapping("repo/days")
     public ResponseEntity<BigDecimal> getCalculateDays(
             @RequestParam("due_date") String due_date,
@@ -45,16 +39,18 @@ public class RepoController {
     @GetMapping("repo/counterparty")
     public ResponseEntity<Map<String, Object>> getRepoCounterParty(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "50") int size
+            @RequestParam(value = "size", defaultValue = "50") int size,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "code", required = false) String code
     ) {
-        return ResponseEntity.ok(repoService.getRepoCounterParty(page, size));
+        return ResponseEntity.ok(repoService.getRepoCounterParty(page, size, name, code));
     }
 
     @PostMapping("repo/insert")
     public ResponseEntity<String> insertRepo(
-            @RequestBody RepoInsertRequest request
+            @RequestBody List<RepoInsertRequest> requests
     ) {
-        repoService.insertRepo(request);
+        repoService.insertRepo(requests);
         return ResponseEntity.ok("Data Repo berhasil disimpan");
     }
 

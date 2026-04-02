@@ -12,7 +12,7 @@ public interface ReksadanaListResponse {
     BigDecimal getAmountUp();
     BigDecimal getLastNab();
     BigDecimal getTotalNabMi();
-    Short getAffiliated();
+    String getAffiliated();
     String getAccount();
     BigDecimal getHaircut();
     BigDecimal getLimitpct();

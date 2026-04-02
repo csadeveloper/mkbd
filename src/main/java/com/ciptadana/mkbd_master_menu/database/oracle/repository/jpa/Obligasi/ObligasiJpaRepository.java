@@ -1,6 +1,7 @@
 package com.ciptadana.mkbd_master_menu.database.oracle.repository.jpa.Obligasi;
 
 import com.ciptadana.mkbd_master_menu.database.oracle.entity.NativeEntity;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Obligasi.F1SearchResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Obligasi.ObligasiBondNameResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Obligasi.ObligasiListResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Obligasi.ObligasiRatingResponse;
@@ -37,8 +38,8 @@ public interface ObligasiJpaRepository extends JpaRepository<NativeEntity, Strin
             @Param("haircutAfter") BigDecimal haircutAfter,
             @Param("concernRisk") BigDecimal concernRisk,
             @Param("acquisitionPrice") BigDecimal acquisitionPrice,
-            @Param("affiliated") Short affiliated,
-            @Param("sukuk") Short sukuk
+            @Param("affiliated") String affiliated,
+            @Param("sukuk") String sukuk
     );
 
     @Transactional
@@ -71,8 +72,8 @@ public interface ObligasiJpaRepository extends JpaRepository<NativeEntity, Strin
             @Param("haircutAfter") BigDecimal haircutAfter,
             @Param("concernRisk") BigDecimal concernRisk,
             @Param("acquisitionPrice") BigDecimal acquisitionPrice,
-            @Param("affiliated") Short affiliated,
-            @Param("sukuk") Short sukuk
+            @Param("affiliated") String affiliated,
+            @Param("sukuk") String sukuk
     );
 
     @Transactional
@@ -128,6 +129,28 @@ public interface ObligasiJpaRepository extends JpaRepository<NativeEntity, Strin
             """, nativeQuery = true)
     ObligasiBondNameResponse findObligasiBondName(
             @Param("code") String code
+    );
+
+    @Transactional
+    @Query(value = """
+            SELECT code, name FROM (
+                SELECT s.code, s.name, ROWNUM AS rn
+                FROM (
+                    SELECT shares.code, shares.name
+                    FROM SHARES@PROD, COUNTRY@PROD
+                    WHERE shares.country = country.id
+                      AND shares.closured_date IS NULL
+                      AND (:input IS NULL OR shares.name LIKE '%' ||  :input || '%')
+                    ORDER BY shares.name, shares.code
+                ) s
+                WHERE ROWNUM <= :offset + :limit
+            )
+            WHERE rn > :offset
+            """, nativeQuery = true)
+    List<F1SearchResponse> findF1(
+            @Param("input") String input,
+            @Param("offset") int offset,
+            @Param("limit") int limit
     );
 
     @Transactional

@@ -14,5 +14,5 @@ public class SbnInsertRequest {
     private BigDecimal nominal;
     private BigDecimal marketValue;
     private BigDecimal acquisitionPrice;
-    private Short affiliated;
+    private String affiliated;
 }

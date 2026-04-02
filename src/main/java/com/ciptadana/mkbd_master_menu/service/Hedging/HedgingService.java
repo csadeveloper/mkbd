@@ -8,6 +8,7 @@ import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Hedg
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,16 +29,19 @@ public class HedgingService {
     }
 
     //    Insert hedging baru
-    public void insertHedging(HedgingInsertRequest request) {
-        hedghingJpaRepository.insertHedging(
-                request.getDueDate(),
-                request.getNshare(),
-                request.getNominal(),
-                request.getNominalHedging(),
-                request.getHedgingVal(),
-                request.getHcHedgingVal(),
-                request.getHcVal()
-        );
+    @Transactional
+    public void insertHedging(List<HedgingInsertRequest> requests) {
+        for (HedgingInsertRequest request : requests) {
+            hedghingJpaRepository.insertHedging(
+                    request.getDueDate(),
+                    request.getNshare(),
+                    request.getNominal(),
+                    request.getNominalHedging(),
+                    request.getHedgingVal(),
+                    request.getHcHedgingVal(),
+                    request.getHcVal()
+            );
+        }
     }
 
     //    Delete hedging

@@ -18,6 +18,6 @@ public class ObligasiInsertRequest {
     private BigDecimal haircutAfter;
     private BigDecimal concernRisk;
     private BigDecimal acquisitionPrice;
-    private Short affiliated;
-    private Short sukuk;
+    private String affiliated;
+    private String sukuk;
 }

@@ -6,7 +6,7 @@ import java.util.Date;
 public interface ObligasiListResponse {
     String getId();
     Date getRecdate();
-    Date getDealdate();
+    Date getDealDate();
     String getNshareName();
     String getRating();
     BigDecimal getQuantity();
@@ -15,10 +15,10 @@ public interface ObligasiListResponse {
     BigDecimal getHaircutValue();
     BigDecimal getHaircutAfter();
     BigDecimal getConcernRisk();
-    Short getAffiliated();
+    String getAffiliated();
     String getGroupShare();
     BigDecimal getAcquisitionPrice();
-    Short getSukuk();
+    String getSukuk();
     BigDecimal getHaircut();
 
 

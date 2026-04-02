@@ -15,7 +15,7 @@ public interface SbnJpaRepository extends JpaRepository<NativeEntity, String> {
 
     @Transactional
     @Query(value = """
-            SELECT ROWID, MKBD.TRX_SBN.*
+            SELECT ROWID AS ID, MKBD.TRX_SBN.*
             FROM MKBD.TRX_SBN
             WHERE DUE_DATE >= TO_DATE(:date, 'YYYY-MM-DD')
             ORDER BY NSHARE, DUE_DATE
@@ -40,7 +40,7 @@ public interface SbnJpaRepository extends JpaRepository<NativeEntity, String> {
             @Param("nominal") BigDecimal nominal,
             @Param("marketValue") BigDecimal marketValue,
             @Param("acquisitionPrice") BigDecimal acquisitionPrice,
-            @Param("affiliated") Short affiliated
+            @Param("affiliated") String affiliated
     );
 
     @Transactional
@@ -64,7 +64,7 @@ public interface SbnJpaRepository extends JpaRepository<NativeEntity, String> {
             @Param("nominal") BigDecimal nominal,
             @Param("marketValue") BigDecimal marketValue,
             @Param("acquisitionPrice") BigDecimal acquisitionPrice,
-            @Param("affiliated") Short affiliated
+            @Param("affiliated") String affiliated
     );
 
     @Transactional
@@ -74,5 +74,19 @@ public interface SbnJpaRepository extends JpaRepository<NativeEntity, String> {
             WHERE ROWID = :rowid
             """, nativeQuery = true)
     void deleteSbn(@Param("rowid") String rowid);
+
+    @Transactional
+    @Query(value = """
+            SELECT NVL(SALDO, 0) AS EQUITY_VALUE
+            FROM MKBD.MKBD_FINAL_DATA
+            WHERE VD_SEKURITAS_CAT = 'VD52'
+             AND VD_LINE_NO = 172
+             AND GEN_DATE = (SELECT MAX(GEN_DATE)
+             FROM MKBD.MKBD_FINAL_DATA
+             WHERE VD_SEKURITAS_CAT = 'VD52'
+             AND VD_LINE_NO = 172
+             AND GEN_DATE < TO_DATE(:asOfDate, 'YYYY-MM-DD') )
+            """, nativeQuery = true)
+    BigDecimal findLastEquity(@Param("asOfDate") String asOfDate);
 
 }

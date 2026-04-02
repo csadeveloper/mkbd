@@ -8,6 +8,7 @@ import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -27,21 +28,19 @@ public class RepoService {
     }
 
 //    counter party repo & reverse repo
-    public List<RepoCounterPartyResponse> getRepoCounterPartyByName(String name) {
-        return repoJpaRepository.findRepoCounterPartyByName(name);
-    }
 
-
+// calculate days for repo
+// calculate days for penjaminan korporasi
     public BigDecimal calculateDays (String a, String b){
         return repoJpaRepository.findDays(a,b);
     }
 
     //    counter party repo & reverse repo
-    public Map<String, Object> getRepoCounterParty(int page, int size) {
+    public Map<String, Object> getRepoCounterParty(int page, int size, String name, String code) {
         int startRow = page * size;
         int endRow = startRow + size;
-        List<RepoCounterPartyResponse> data = repoJpaRepository.findRepoCounterParty(startRow, endRow);
-        long total = repoJpaRepository.countRepoCounterParty();
+        List<RepoCounterPartyResponse> data = repoJpaRepository.findRepoCounterParty(name, code, startRow, endRow);
+        long total = repoJpaRepository.countRepoCounterParty(name, code);
 
         Map<String, Object> result = new HashMap<>();
         result.put("content", data);
@@ -53,21 +52,24 @@ public class RepoService {
     }
 
     //    Insert repo baru
-    public void insertRepo(RepoInsertRequest request) {
-        repoJpaRepository.insertRepo(
-                request.getCounterParty(),
-                request.getNshare(),
-                request.getQuantity(),
-                request.getPrice(),
-                request.getNominal(),
-                request.getReBuyingValue(),
-                request.getInitialDate(),
-                request.getDueDate(),
-                request.getRatio(),
-                request.getDays(),
-                request.getType(),
-                request.getNotes()
-        );
+    @Transactional
+    public void insertRepo(List<RepoInsertRequest> requests) {
+        for (RepoInsertRequest request : requests) {
+            repoJpaRepository.insertRepo(
+                    request.getCounterParty(),
+                    request.getNshare(),
+                    request.getQuantity(),
+                    request.getPrice(),
+                    request.getNominal(),
+                    request.getReBuyingValue(),
+                    request.getInitialDate(),
+                    request.getDueDate(),
+                    request.getRatio(),
+                    request.getDays(),
+                    request.getType(),
+                    request.getNotes()
+            );
+        }
     }
 
     //    Update repo

@@ -27,35 +27,6 @@ public interface RepoJpaRepository extends JpaRepository<NativeEntity, String> {
 
     @Transactional
     @Query(value = """
-            SELECT * FROM (
-                SELECT A.*, ROWNUM RNUM FROM (
-                    SELECT
-                        CLIENT.*,
-                        CLIENT_TYPE.NAME AS CLIENTTYPENAME,
-                        SALESMAN.NAME AS SALESMANNAME,
-                        CLIENT_CONTROL.SUSPENDED
-                    FROM
-                        DENPASAR.CLIENT,
-                        DENPASAR.CLIENT_TYPE,
-                        DENPASAR.SALESMAN,
-                        DENPASAR.CLIENT_CONTROL
-                    WHERE
-                        CLIENT.CLIENT_TYPE = CLIENT_TYPE.ID
-                        AND CLIENT.SALESMAN = SALESMAN.ID
-                        AND CLIENT.CODE = CLIENT_CONTROL.CLIENT_ID
-                        AND CLIENT_CONTROL.EFFECTIVE = ( SELECT MAX( EFFECTIVE ) FROM DENPASAR.CLIENT_CONTROL WHERE CLIENT_ID = CLIENT.CODE )
-                        AND CLIENT.CLOSURED_BY IS NULL
-                    ORDER BY CLIENT.CODE
-                ) A WHERE ROWNUM <= :endRow
-            ) WHERE RNUM > :startRow
-            """, nativeQuery = true)
-    List<RepoCounterPartyResponse> findRepoCounterParty(
-            @Param("startRow") int startRow,
-            @Param("endRow") int endRow
-    );
-
-    @Transactional
-    @Query(value = """
             SELECT COUNT(*)
             FROM
             	DENPASAR.CLIENT,
@@ -68,31 +39,48 @@ public interface RepoJpaRepository extends JpaRepository<NativeEntity, String> {
             	AND CLIENT.CODE = CLIENT_CONTROL.CLIENT_ID
             	AND CLIENT_CONTROL.EFFECTIVE = ( SELECT MAX( EFFECTIVE ) FROM DENPASAR.CLIENT_CONTROL WHERE CLIENT_ID = CLIENT.CODE )
             	AND CLIENT.CLOSURED_BY IS NULL
+            	AND (:name IS NULL OR CLIENT.NAME LIKE '%' || :name || '%')
+            	AND (:code IS NULL OR CLIENT.CODE LIKE '%' || :code || '%')
             """, nativeQuery = true)
-    long countRepoCounterParty();
+    long countRepoCounterParty(@Param("name") String name, @Param("code") String code);
 
     @Transactional
     @Query(value = """
-            SELECT
-            	CLIENT.*,
-            	CLIENT_TYPE.NAME AS CLIENTTYPENAME,
-            	SALESMAN.NAME AS SALESMANNAME,
-            	CLIENT_CONTROL.SUSPENDED 
-            FROM
-            	DENPASAR.CLIENT,
-            	DENPASAR.CLIENT_TYPE,
-            	DENPASAR.SALESMAN,
-            	DENPASAR.CLIENT_CONTROL 
-            WHERE
-            	CLIENT.CLIENT_TYPE = CLIENT_TYPE.ID 
-            	AND CLIENT.SALESMAN = SALESMAN.ID 
-            	AND CLIENT.CODE = CLIENT_CONTROL.CLIENT_ID 
-            	AND CLIENT_CONTROL.EFFECTIVE = ( SELECT MAX( EFFECTIVE ) FROM DENPASAR.CLIENT_CONTROL WHERE CLIENT_ID = CLIENT.CODE ) 
-            	AND CLIENT.CLOSURED_BY IS NULL
-            	AND UPPER(CLIENT.NAME) LIKE UPPER(NVL( '%' || :name || '%', CLIENT.NAME))
+            SELECT * FROM (
+                SELECT a.*, ROWNUM rnum FROM (
+                    SELECT
+                        client.*,
+                        client_type.name AS ClientTypeName,
+                        salesman.name AS SalesmanName,
+                        client_control.suspended
+                    FROM
+                        DENPASAR.CLIENT,
+                        DENPASAR.CLIENT_TYPE,
+                        DENPASAR.SALESMAN,
+                        DENPASAR.CLIENT_CONTROL
+                    WHERE
+                        CLIENT.CLIENT_TYPE = CLIENT_TYPE.ID
+                        AND CLIENT.SALESMAN = SALESMAN.ID
+                        AND CLIENT.CODE = CLIENT_CONTROL.CLIENT_ID
+                        AND CLIENT_CONTROL.EFFECTIVE = (
+                            SELECT MAX( EFFECTIVE )
+                            FROM DENPASAR.CLIENT_CONTROL
+                            WHERE CLIENT_ID = CLIENT.CODE
+                        )
+                        AND CLIENT.CLOSURED_BY IS NULL
+                        AND (:name IS NULL OR CLIENT.NAME LIKE '%' || :name || '%')
+                        AND (:code IS NULL OR CLIENT.CODE LIKE '%' || :code || '%')
+                    ORDER BY
+                        CLIENT.NAME,
+                        CLIENT.CODE
+                ) a WHERE ROWNUM <= :endRow
+            ) WHERE rnum > :startRow
             """, nativeQuery = true)
-    List<RepoCounterPartyResponse> findRepoCounterPartyByName(
-            @Param("name") String name
+    List<RepoCounterPartyResponse> findRepoCounterParty(
+            @Param("name") String name,
+            @Param("code") String code,
+            @Param("startRow") int startRow,
+            @Param("endRow") int endRow
     );
 
     @Transactional

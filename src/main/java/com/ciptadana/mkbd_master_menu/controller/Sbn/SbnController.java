@@ -1,5 +1,6 @@
 package com.ciptadana.mkbd_master_menu.controller.Sbn;
 
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.Sbn.SbnCalculationResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.Sbn.SbnInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.Sbn.SbnUpdateRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Sbn.SbnListResponse;
@@ -25,11 +26,17 @@ public class SbnController {
         return ResponseEntity.ok(sbnService.getSbnList(date));
     }
 
+    @GetMapping("sbn/calculation")
+    public ResponseEntity<List<SbnCalculationResponse>> getSbnCalculation(
+            @RequestParam("date") String date) {
+        return ResponseEntity.ok(sbnService.getSbnCalculation(date));
+    }
+
     @PostMapping("sbn/insert")
     public ResponseEntity<String> insertSbn(
-            @RequestBody SbnInsertRequest request
+            @RequestBody List<SbnInsertRequest> requests
     ) {
-        sbnService.insertSbn(request);
+        sbnService.insertSbn(requests);
         return ResponseEntity.ok("Data SBN berhasil disimpan");
     }
 

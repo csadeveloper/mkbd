@@ -1,13 +1,11 @@
 package com.ciptadana.mkbd_master_menu.controller.Reksadana;
 
-import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo.ReverseRepoInsertRequest;
-import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo.ReverseRepoUpdateRequest;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.Reksadana.ReksadanaInsertRequest;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.Reksadana.ReksadanaUpdateRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Reksadana.ReksadanaIsinResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Reksadana.ReksadanaListResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Reksadana.ReksadanaRiskResponse;
-import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo.RepoListResponse;
 import com.ciptadana.mkbd_master_menu.service.Reksadana.ReksadanaService;
-import com.ciptadana.mkbd_master_menu.service.ReverseRepo.ReverseRepoService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +43,35 @@ public class ReksadanaController {
             @RequestParam(value = "input", required = false) String input
     ) {
         return ResponseEntity.ok(reksadanaService.getReksadanaIsin(type, input));
+    }
+
+    @PostMapping("reksadana/insert")
+    public ResponseEntity<String> insertReksadana(
+            @RequestBody List<ReksadanaInsertRequest> requests
+    ) {
+        reksadanaService.insertReksadana(requests);
+        return ResponseEntity.ok("Data Reksadana berhasil disimpan");
+    }
+
+    @PutMapping("reksadana/update")
+    public ResponseEntity<String> updateReksadana(
+            @RequestBody ReksadanaUpdateRequest request
+    ) {
+        reksadanaService.updateReksadana(request);
+        return ResponseEntity.ok("Data Reksadana berhasil diupdate");
+    }
+
+    @DeleteMapping("reksadana/delete")
+    public ResponseEntity<String> deleteReksadana(
+            @RequestParam("rowid") String rowid
+    ) {
+        reksadanaService.deleteReksadana(rowid);
+        return ResponseEntity.ok("Data Reksadana berhasil dihapus");
+    }
+
+    @GetMapping("validate/date")
+    public ResponseEntity<String> getCurrentDate() {
+        return ResponseEntity.ok(reksadanaService.getCurrentDate());
     }
 
 }

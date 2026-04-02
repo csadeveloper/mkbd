@@ -72,4 +72,63 @@ public interface ReksadanaJpaRepository extends JpaRepository<NativeEntity, Stri
             @Param("isincode") String isincode
     );
 
+    @Transactional
+    @Modifying
+    @Query(value = """
+            INSERT INTO MKBD.TRX_RDAUM
+            (RECDATE, DEAL_DATE, TYPE, NSHARE_NAME, AMOUNT_UP,
+            LAST_NAB, TOTAL_NAB_MI, AFFILIATED)
+            VALUES (SYSDATE, TO_DATE(:dealDate, 'YYYY-MM-DD'), :type,
+            :nshareName, :amountUp, :lastNab, :totalNabMi, :affiliated)
+            """, nativeQuery = true)
+    void insertReksadana(
+            @Param("dealDate") String dealDate,
+            @Param("type") String type,
+            @Param("nshareName") String nshareName,
+            @Param("amountUp") BigDecimal amountUp,
+            @Param("lastNab") BigDecimal lastNab,
+            @Param("totalNabMi") BigDecimal totalNabMi,
+            @Param("affiliated") String affiliated
+    );
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+            UPDATE MKBD.TRX_RDAUM
+            SET DEAL_DATE = TO_DATE(:dealDate, 'YYYY-MM-DD'),
+                TYPE = :type,
+                NSHARE_NAME = :nshareName,
+                AMOUNT_UP = :amountUp,
+                LAST_NAB = :lastNab,
+                TOTAL_NAB_MI = :totalNabMi,
+                AFFILIATED = :affiliated
+            WHERE ROWID = :rowid
+            """, nativeQuery = true)
+    void updateReksadana(
+            @Param("rowid") String rowid,
+            @Param("dealDate") String dealDate,
+            @Param("type") String type,
+            @Param("nshareName") String nshareName,
+            @Param("amountUp") BigDecimal amountUp,
+            @Param("lastNab") BigDecimal lastNab,
+            @Param("totalNabMi") BigDecimal totalNabMi,
+            @Param("affiliated") String affiliated
+    );
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+            DELETE FROM MKBD.TRX_RDAUM
+            WHERE ROWID = :rowid
+            """, nativeQuery = true)
+    void deleteReksadana(@Param("rowid") String rowid);
+
+    @Transactional
+    @Query(value = """
+            SELECT PARAMVAL FROM MKBD.PARAM WHERE CODE='RECDATE'
+            """, nativeQuery = true)
+    String getCurrentDate(
+    );
+
+
 }

@@ -7,6 +7,7 @@ import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,21 +24,24 @@ public class ReverseRepoService {
     }
 
     //    Insert reverse repo baru
-    public void insertReverseRepo(ReverseRepoInsertRequest request) {
-        reverseRepoJpaRepository.insertReverseRepo(
-                request.getCounterParty(),
-                request.getNshare(),
-                request.getQuantity(),
-                request.getPrice(),
-                request.getNominal(),
-                request.getReSellingValue(),
-                request.getInitialDate(),
-                request.getDueDate(),
-                request.getRatio(),
-                request.getDays(),
-                request.getType(),
-                request.getNotes()
-        );
+    @Transactional
+    public void insertReverseRepo(List<ReverseRepoInsertRequest> requests) {
+        for (ReverseRepoInsertRequest request : requests) {
+            reverseRepoJpaRepository.insertReverseRepo(
+                    request.getCounterParty(),
+                    request.getNshare(),
+                    request.getQuantity(),
+                    request.getPrice(),
+                    request.getNominal(),
+                    request.getReSellingValue(),
+                    request.getInitialDate(),
+                    request.getDueDate(),
+                    request.getRatio(),
+                    request.getDays(),
+                    request.getType(),
+                    request.getNotes()
+            );
+        }
     }
 
     //    Update reverse repo
