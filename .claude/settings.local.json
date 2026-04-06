@@ -4,7 +4,8 @@
       "Bash(cd 'D:\\\\mkbd master menu\\\\mkbd' && ./mvnw compile -q 2>&1 | tail -20)",
       "Bash(cd \"D:\\\\mkbd master menu\\\\mkbd\" && ./mvnw dependency:tree -Dincludes=com.fasterxml.jackson.datatype:jackson-datatype-jsr310 2>/dev/null | grep jsr310 || mvn dependency:tree -Dincludes=com.fasterxml.jackson.datatype:jackson-datatype-jsr310 2>/dev/null | grep jsr310)",
       "Bash(./mvnw compile:*)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(find:*)"
     ]
   }
 }

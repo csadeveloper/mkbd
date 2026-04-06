@@ -1,14 +1,19 @@
 package com.ciptadana.mkbd_master_menu.controller.MasterHaircut;
 
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterHaircut.HaircutDeleteRequest;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterHaircut.HaircutHistDeleteRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterHaircut.HaircutHistInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterHaircut.HaircutInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterHaircut.HaircutUpdateRequest;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.FileUploadResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.MasterHaircut.HaircutResponse;
 import com.ciptadana.mkbd_master_menu.service.MasterHaircut.MasterHaircutService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -78,6 +83,13 @@ public class MasterHaircutController {
     ) {
         masterHaircutService.updateLastUploadHaircut(date);
         return ResponseEntity.ok("Last Upload Haircut berhasil diupdate");
+    }
+
+    @PostMapping(value = "master/haircut/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FileUploadResponse> uploadHaircut(
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(masterHaircutService.processHaircutFile(file));
     }
 
 }

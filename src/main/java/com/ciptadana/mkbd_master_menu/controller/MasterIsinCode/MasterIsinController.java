@@ -1,7 +1,10 @@
 package com.ciptadana.mkbd_master_menu.controller.MasterIsinCode;
 
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.FileUploadResponse;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.IsinCodeDeleteRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.IsinCodeInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.IsinCodeUpdateRequest;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.XdmMasterIsinDeleteRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.XdmMasterIsinInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.MasterIsinCode.XdmMasterIsinUpdateRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.MasterIsinCode.IsinReksadanaResponse;
@@ -10,7 +13,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -58,6 +63,14 @@ public class MasterIsinController {
         return ResponseEntity.ok("Data Isin Code berhasil disimpan");
     }
 
+    @PostMapping("master/isin/insert/from-xdm")
+    public ResponseEntity<String> insertIsinCodeFromXdm(
+            @RequestParam("seccode") String seccode
+    ) {
+        masterIsinService.insertIsinCodeFromXdm(seccode);
+        return ResponseEntity.ok("Data Isin Code dari XDM Master Isin berhasil disimpan");
+    }
+
     @DeleteMapping("master/isin/xdm/delete")
     public ResponseEntity<String> deleteXdmMasterIsin(
             @RequestParam("seccode") String seccode,
@@ -66,6 +79,7 @@ public class MasterIsinController {
         masterIsinService.deleteXdmMasterIsin(seccode, isinCode);
         return ResponseEntity.ok("Data XDM Master Isin berhasil dihapus");
     }
+
 
     @PutMapping("master/isin/xdm/update")
     public ResponseEntity<String> updateXdmMasterIsin(
@@ -81,6 +95,20 @@ public class MasterIsinController {
     ) {
         masterIsinService.insertXdmMasterIsin(requests);
         return ResponseEntity.ok("Data XDM Master Isin berhasil disimpan");
+    }
+
+    @PostMapping(value = "master/isin/upload/old-format", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FileUploadResponse> uploadOldFormat(
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(masterIsinService.processOldFormatFile(file));
+    }
+
+    @PostMapping(value = "master/isin/upload/new-format", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FileUploadResponse> uploadNewFormat(
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(masterIsinService.processNewFormatFile(file));
     }
 
 }

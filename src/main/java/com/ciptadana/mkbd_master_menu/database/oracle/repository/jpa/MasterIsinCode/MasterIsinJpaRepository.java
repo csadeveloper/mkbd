@@ -84,8 +84,8 @@ public interface MasterIsinJpaRepository extends JpaRepository<NativeEntity, Str
             INSERT INTO MKBD.XDM_MASTER_ISIN
             (SECCODE, SECNAME, SECTYPE, ISSUER, REGISTRAR, ISIN_CODE, ISIN_STATUS,
             LISTING_DATE, NO_OF_SEC, STOCK_EXCH, STATUS, NOMINAL, SEC_NUM,
-            EXP_DATE, INTEREST, INT_TYPE, INT_FREQ, DAYCOUNT, CURR,
-            SEC_FORM, EFF_ISIN_DATE, MAT_DATE, SEC_SECTOR)
+            EXP_DATE, INTEREST, INT_TYPE, INT_FREQ, DAYCOUNTBASIS, CURRENCY,
+            SECFORM, EFF_ISINDATE, MAT_DATE, SEC_SECTOR)
             VALUES (:seccode, :secname, :sectype, :issuer, :registrar, :isinCode, :isinStatus,
             TO_DATE(:listingDate, 'YYYY-MM-DD'), :noOfSec, :stockExch, :status, :nominal, :secNum,
             TO_DATE(:expDate, 'YYYY-MM-DD'), :interest, :intType, :intFreq, :daycount, :curr,
@@ -115,6 +115,19 @@ public interface MasterIsinJpaRepository extends JpaRepository<NativeEntity, Str
             @Param("effIsinDate") String effIsinDate,
             @Param("matDate") String matDate,
             @Param("secSector") String secSector
+    );
+
+    @Transactional
+    @Modifying
+    @Query(value = """
+            INSERT INTO MKBD.ISINCODE (ISINTYPE, SHORTCODE, ISSUER, NAME, ISINCODE, STATUS)
+            SELECT 'SAHAM' AS ISINTYPE, SECCODE, ISSUER, SECNAME, ISIN_CODE, ISIN_STATUS
+            FROM MKBD.XDM_MASTER_ISIN
+            WHERE SECTYPE = 'EQUITY'
+             AND SECCODE = :seccode
+            """, nativeQuery = true)
+    void insertIsinCodeFromXdm(
+            @Param("seccode") String seccode
     );
 
     @Transactional
@@ -156,10 +169,10 @@ public interface MasterIsinJpaRepository extends JpaRepository<NativeEntity, Str
                 INTEREST = :interest,
                 INT_TYPE = :intType,
                 INT_FREQ = :intFreq,
-                DAYCOUNT = :daycount,
-                CURR = :curr,
-                SEC_FORM = :secForm,
-                EFF_ISIN_DATE = TO_DATE(:effIsinDate, 'YYYY-MM-DD'),
+                DAYCOUNTBASIS = :daycount,
+                CURRENCY = :curr,
+                SECFORM = :secForm,
+                EFF_ISINDATE = TO_DATE(:effIsinDate, 'YYYY-MM-DD'),
                 MAT_DATE = TO_DATE(:matDate, 'YYYY-MM-DD'),
                 SEC_SECTOR = :secSector
             WHERE SECCODE = :seccode
