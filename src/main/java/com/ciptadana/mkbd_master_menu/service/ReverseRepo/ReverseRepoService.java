@@ -4,6 +4,7 @@ import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo.ReverseRepoUpdateRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.jpa.ReverseRepo.ReverseRepoJpaRepository;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo.RepoListResponse;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.ReverseRepo.ReverseRepoListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ReverseRepoService {
     private final ReverseRepoJpaRepository reverseRepoJpaRepository;
 
     //    Muat daftar reverse_repo
-    public List<RepoListResponse> getReverseRepoList(String date) {
+    public List<ReverseRepoListResponse> getReverseRepoList(String date) {
         return reverseRepoJpaRepository.findReverseRepoList(date);
     }
 

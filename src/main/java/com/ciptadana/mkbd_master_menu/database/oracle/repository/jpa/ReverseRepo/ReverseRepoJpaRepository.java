@@ -3,6 +3,7 @@ package com.ciptadana.mkbd_master_menu.database.oracle.repository.jpa.ReverseRep
 import com.ciptadana.mkbd_master_menu.database.oracle.entity.NativeEntity;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo.RepoCounterPartyResponse;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo.RepoListResponse;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.ReverseRepo.ReverseRepoListResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,7 +22,7 @@ public interface ReverseRepoJpaRepository extends JpaRepository<NativeEntity, St
             WHERE DUE_DATE >= TO_DATE(:date, 'YYYY-MM-DD')
             ORDER BY NSHARE, INITIAL_DATE
             """, nativeQuery = true)
-    List<RepoListResponse> findReverseRepoList(
+    List<ReverseRepoListResponse> findReverseRepoList(
             @Param("date") String date
     );
 

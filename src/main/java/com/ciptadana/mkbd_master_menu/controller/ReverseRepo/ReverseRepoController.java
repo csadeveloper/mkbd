@@ -3,6 +3,7 @@ package com.ciptadana.mkbd_master_menu.controller.ReverseRepo;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo.ReverseRepoInsertRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.dto.ReverseRepo.ReverseRepoUpdateRequest;
 import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.Repo.RepoListResponse;
+import com.ciptadana.mkbd_master_menu.database.oracle.repository.projection.ReverseRepo.ReverseRepoListResponse;
 import com.ciptadana.mkbd_master_menu.service.ReverseRepo.ReverseRepoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ public class ReverseRepoController {
     private final ReverseRepoService reverseRepoService;
 
     @GetMapping("reverseRepo/list")
-    public ResponseEntity<List<RepoListResponse>> getReverseRepoList(
+    public ResponseEntity<List<ReverseRepoListResponse>> getReverseRepoList(
             @RequestParam("date") String date) {
         return ResponseEntity.ok(reverseRepoService.getReverseRepoList(date));
     }
