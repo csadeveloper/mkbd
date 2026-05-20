@@ -1,0 +1,514 @@
+LATIHAN: NESTED MAP & LIST DI JAVA
+====================================
+
+Tujuan: setelah selesai, lu bisa baca/tulis struktur kayak
+  Map<String, List<Map<String, Object>>>
+tanpa mumet, dan paham kenapa kode MKBD pake pattern ini.
+
+Cara pake file ini:
+  - Tutup jawaban-nya dulu (jangan scroll).
+  - Coba jawab di kepala / kertas / IDE.
+  - Baru cek jawaban.
+  - Kalau salah > 2x di level yg sama, ulang level itu sebelum lanjut.
+
+Aturan inti yg WAJIB diinget:
+  {} di JSON  =  Map  di Java
+  [] di JSON  =  List di Java
+  Value di Map / element di List bisa apa aja, termasuk Map/List lagi.
+
+
+=================================================================
+LEVEL 1 — BACA JSON, TEBAK TIPE JAVA
+=================================================================
+Lu dikasih JSON. Tebak tipe Java paling spesifik yg muat
+struktur itu.
+
+-----------------------------------------------------------
+SOAL 1.1
+-----------------------------------------------------------
+  { "name": "Ari", "age": 30 }
+
+-----------------------------------------------------------
+SOAL 1.2
+-----------------------------------------------------------
+  [ "apel", "jeruk", "mangga" ]
+
+-----------------------------------------------------------
+SOAL 1.3
+-----------------------------------------------------------
+  [
+    { "code": "A1", "qty": 10 },
+    { "code": "B2", "qty": 20 }
+  ]
+
+-----------------------------------------------------------
+SOAL 1.4
+-----------------------------------------------------------
+  {
+    "vd51": [
+      { "baris": 30, "amount": 1000 },
+      { "baris": 34, "amount": 2000 }
+    ],
+    "vd52": [
+      { "baris": 129, "amount": 500 }
+    ]
+  }
+
+-----------------------------------------------------------
+SOAL 1.5 (ini shape-nya all-data-full)
+-----------------------------------------------------------
+  {
+    "genDate": "2026-04-21",
+    "detail": {
+      "vd51": {
+        "baris30": [ { "code": "X" } ],
+        "baris34": [ { "code": "Y" } ]
+      }
+    }
+  }
+
+
+=================================================================
+LEVEL 2 — BACA TIPE JAVA, TEBAK SHAPE JSON
+=================================================================
+Kebalikan dari level 1.
+
+-----------------------------------------------------------
+SOAL 2.1
+-----------------------------------------------------------
+  List<String>  →  JSON-nya gimana?
+  ["a","b","c"]
+
+-----------------------------------------------------------
+SOAL 2.2
+-----------------------------------------------------------
+  Map<String, Integer>
+  {
+    "Umur": 2,
+  }
+
+-----------------------------------------------------------
+SOAL 2.3
+-----------------------------------------------------------
+  List<Map<String, Object>>
+  [
+    {
+     "name": "ber-ber-patabim"
+    }
+  ]
+
+-----------------------------------------------------------
+SOAL 2.4
+-----------------------------------------------------------
+  Map<String, List<String>>
+
+  {
+    "NAMA": [
+                "EL-NINI"
+    ]
+  }
+
+-----------------------------------------------------------
+SOAL 2.5
+-----------------------------------------------------------
+  Map<String, Map<String, List<Map<String, Object>>>>
+
+  {
+    "NAME": {
+                "ALAMAT": [
+                            {
+                                "BIRTH": "BANDUNG"
+                            }
+                ]
+    }
+  }
+
+  (Hint: ini bentuknya `detail` di response all-data-full lu.)
+
+
+=================================================================
+LEVEL 3 — BACA DARI KANAN KE KIRI
+=================================================================
+Generic ribet di-decode dengan baca dari DALEM keluar.
+Lu jelasin tipe ini pake bahasa biasa, layer-by-layer.
+
+-----------------------------------------------------------
+SOAL 3.1
+-----------------------------------------------------------
+  CompletableFuture<List<Map<String, Object>>>
+  [
+      {
+        "NAME": "BER BER PATABIM"
+      }
+  ]
+
+-----------------------------------------------------------
+SOAL 3.2
+-----------------------------------------------------------
+  Map<String, CompletableFuture<List<Map<String, Object>>>>
+  {
+   "NAME":
+          [
+              {
+                      "BIRTH": "BANDUNG 12 DESEMBER 2003"
+              }
+          ]
+  }
+-----------------------------------------------------------
+SOAL 3.3
+-----------------------------------------------------------
+  ResponseEntity<Map<String, Object>>
+
+  {
+    "Name": "BER BER PATABIM"
+  }
+
+
+=================================================================
+LEVEL 4 — TULIS KODE JAVA UNTUK BIKIN SHAPE
+=================================================================
+Bikin variabel Java yg, kalau di-serialize ke JSON pake Jackson,
+ngasilin JSON di soal.
+
+-----------------------------------------------------------
+SOAL 4.1
+-----------------------------------------------------------
+Bikin:
+  { "name": "Ari", "age": 30 }
+
+-----------------------------------------------------------
+SOAL 4.2
+-----------------------------------------------------------
+Bikin:
+  [
+    { "code": "A1", "qty": 10 },
+    { "code": "B2", "qty": 20 }
+  ]
+
+-----------------------------------------------------------
+SOAL 4.3
+-----------------------------------------------------------
+Bikin:
+  {
+    "vd51": {
+      "baris30": [ { "code": "X" } ]
+    }
+  }
+
+
+=================================================================
+LEVEL 5 — NAVIGASI (AMBIL VALUE DARI NESTED)
+=================================================================
+Diberi struktur, ekstrak value tertentu.
+
+-----------------------------------------------------------
+SOAL 5.1
+-----------------------------------------------------------
+  Map<String, Object> response = ...; // shape soal 1.5
+
+  Tulis kode buat ambil value "code" dari row pertama "baris30".
+  Hasil yg diharapkan: String "X".
+
+-----------------------------------------------------------
+SOAL 5.2
+-----------------------------------------------------------
+  Map<String, Object> response = ...; // shape soal 1.5
+
+  Berapa kali lu butuh `(Map) ...` cast buat sampai ke
+  array baris30? Kenapa?
+
+
+=================================================================
+LEVEL 6 — REAL-CODEBASE SCENARIOS
+=================================================================
+Soal nyata dari kode MKBD lu.
+
+-----------------------------------------------------------
+SOAL 6.1 — MkbdAllDataFullService.java baris 29
+-----------------------------------------------------------
+  Map<String, CompletableFuture<List<Map<String, Object>>>> futures
+      = new LinkedHashMap<>();
+
+  Pertanyaan:
+  (a) Key-nya apa?
+  (b) Value-nya apa?
+  (c) Setelah `.join()`, value-nya berubah jadi tipe apa?
+  (d) Kenapa pake LinkedHashMap, bukan HashMap?
+
+-----------------------------------------------------------
+SOAL 6.2 — MkbdAllDataFullService.java baris 46–48
+-----------------------------------------------------------
+  @SuppressWarnings("unchecked")
+  Map<String, Object> vdMap = (Map<String, Object>) bucket.computeIfAbsent(
+          s.vd(), k -> new LinkedHashMap<>());
+  vdMap.put(s.baris(), rows);
+
+  Pertanyaan:
+  (a) Kenapa butuh cast ke `(Map<String, Object>)`?
+  (b) Kenapa ada @SuppressWarnings("unchecked")?
+  (c) Kalo `bucket` udah punya key `s.vd()`, computeIfAbsent
+      ngapain?
+  (d) Kalo BELUM punya key, ngapain?
+
+-----------------------------------------------------------
+SOAL 6.3 — bandingin DUA pendekatan
+-----------------------------------------------------------
+Ada 2 endpoint yg shape response-nya MIRIP:
+  - /api/mkbd/all-data       → return MkbdAllDataResponse (DTO)
+  - /api/mkbd/all-data-full  → return Map<String, Object>
+
+Pertanyaan:
+  (a) Kenapa yg pertama bisa pake DTO?
+  (b) Kenapa yg kedua HARUS pake Map<String, Object>?
+  (c) Trade-off-nya apa? (sebut min 2 hal yg menang & 2 yg kalah
+      di tiap pendekatan)
+
+
+=================================================================
+=================================================================
+JAWABAN
+=================================================================
+=================================================================
+
+
+-----------------------------------------------------------
+LEVEL 1
+-----------------------------------------------------------
+
+1.1  Map<String, Object>
+     - Key String ("name", "age").
+     - Value campur (String "Ari" + Integer 30) → harus Object.
+
+1.2  List<String>
+     - Semua element String.
+
+1.3  List<Map<String, Object>>
+     - Outer-nya array → List.
+     - Tiap element object → Map<String, Object> (value campur:
+       String + Integer).
+
+1.4  Map<String, List<Map<String, Object>>>
+     - Outer object → Map<String, ...>.
+     - Value-nya array → List<...>.
+     - Element-nya object → Map<String, Object>.
+
+1.5  Map<String, Object>
+     - Outer Map.
+     - Tapi value-nya GAK seragam: "genDate" String, "detail" Map.
+     - Karena value campur tipe → terpaksa pake Object.
+     - Ini KENAPA `Map<String, Object>` muncul dimana-mana di
+       kode lu. Bukan males, tapi memang gak bisa lebih spesifik.
+
+
+-----------------------------------------------------------
+LEVEL 2
+-----------------------------------------------------------
+
+2.1  [ "a", "b", "c" ]
+
+2.2  { "key1": 1, "key2": 2 }
+
+2.3  [ { ... }, { ... } ]
+     Array berisi object.
+
+2.4  { "k1": ["a","b"], "k2": ["c"] }
+     Object dengan value array.
+
+2.5  {
+       "vd51": {
+         "baris30": [ {...}, {...} ],
+         "baris34": [ {...} ]
+       },
+       "vd52": {
+         "baris129": [ {...} ]
+       }
+     }
+     3 lapis: Map → Map → List → Map.
+
+
+-----------------------------------------------------------
+LEVEL 3
+-----------------------------------------------------------
+
+3.1  Baca dari kanan:
+     - Object   = sembarang tipe
+     - Map<String, Object>     = key String, value apa aja
+     - List<Map<String, Object>> = list dari map-map itu (= 1 result-set query)
+     - CompletableFuture<...>  = janji yg nantinya menghasilkan list itu
+
+     Artinya: "future yg pas selesai, ngasih balik list-of-map
+     (alias hasil query JDBC)."
+
+3.2  - Map<...>                                = key→value
+     - Key: String
+     - Value: CompletableFuture<List<Map<String, Object>>>
+       (sama persis kayak 3.1)
+
+     Artinya: "map dari nama-query ke future-hasil-query-nya."
+     Ini persis bentuk variabel `futures` di
+     MkbdAllDataFullService.
+
+3.3  ResponseEntity = wrapper Spring yg nge-bungkus body + status
+     code. Body-nya Map<String, Object>. Pas Spring kirim ke
+     client, body diserialize ke JSON pake Jackson.
+
+
+-----------------------------------------------------------
+LEVEL 4
+-----------------------------------------------------------
+
+4.1
+  Map<String, Object> m = new LinkedHashMap<>();
+  m.put("name", "Ari");
+  m.put("age", 30);
+
+  // atau cara cepet (immutable):
+  Map<String, Object> m = Map.of("name", "Ari", "age", 30);
+
+4.2
+  List<Map<String, Object>> list = new ArrayList<>();
+
+  Map<String, Object> row1 = new LinkedHashMap<>();
+  row1.put("code", "A1");
+  row1.put("qty", 10);
+  list.add(row1);
+
+  Map<String, Object> row2 = new LinkedHashMap<>();
+  row2.put("code", "B2");
+  row2.put("qty", 20);
+  list.add(row2);
+
+4.3
+  Map<String, Object> rowX = new LinkedHashMap<>();
+  rowX.put("code", "X");
+
+  List<Map<String, Object>> baris30 = new ArrayList<>();
+  baris30.add(rowX);
+
+  Map<String, Object> vd51 = new LinkedHashMap<>();
+  vd51.put("baris30", baris30);
+
+  Map<String, Object> root = new LinkedHashMap<>();
+  root.put("vd51", vd51);
+
+  Trick mental: bikin dari DALEM keluar (rowX dulu, root terakhir).
+  Sama kayak bikin matryoshka — boneka kecil dulu baru bungkus.
+
+
+-----------------------------------------------------------
+LEVEL 5
+-----------------------------------------------------------
+
+5.1
+  Map<String, Object> detail = (Map<String, Object>) response.get("detail");
+  Map<String, Object> vd51   = (Map<String, Object>) detail.get("vd51");
+  List<Map<String, Object>> baris30 =
+      (List<Map<String, Object>>) vd51.get("baris30");
+  String code = (String) baris30.get(0).get("code");
+
+  Note: `.get(0)` ambil element pertama list, `.get("code")` ambil
+  value dari map. Walaupun method-nya sama-sama bernama `get`, beda
+  kelas (List.get vs Map.get).
+
+5.2
+  3 cast ke Map (response→detail, detail→vd51, baris30 element).
+  Plus 1 cast ke List (vd51→baris30) dan 1 cast ke String (final).
+
+  Total 5 cast. Kenapa banyak: karena `Object` itu top-type di Java,
+  lu harus narrow ke tipe konkret tiap level. Compiler GAK BISA
+  ngira-ngira; lu yg tau isinya apa, bukan dia.
+
+  Inilah harga `Map<String, Object>`: fleksibel, tapi cast-cast
+  manual. DTO class ngilangin masalah ini (lu langsung
+  `response.getDetail().getVd51().getBaris30().get(0).getCode()`).
+
+
+-----------------------------------------------------------
+LEVEL 6
+-----------------------------------------------------------
+
+6.1
+(a) Key = nama unik tiap query, format `type:vd/baris`
+    (contoh: "detail:vd51/baris30"). Lihat `SqlScript.key()`.
+
+(b) Value = CompletableFuture yg jalanin 1 query secara async di
+    `mkbdQueryExecutor`. Pas selesai, isinya List<Map<String, Object>>
+    (= rows hasil query, tiap row Map kolom→value).
+
+(c) Setelah .join(), unwrap dari Future. Jadi `List<Map<String, Object>>`.
+    .join() = blocking wait sampai future selesai, return value-nya.
+
+(d) LinkedHashMap menjaga insertion order. HashMap urutannya random.
+    Dipake biar response JSON-nya konsisten urutan key-nya
+    (vd51, vd52, vd56, ...). FE jadi gampang debug, lu juga gampang
+    bandingin response.
+
+6.2
+(a) `bucket` itu Map<String, Object>. `computeIfAbsent` nge-return
+    `Object` (sesuai tipe value Map-nya). Tapi lu tau isinya Map
+    karena lambda `k -> new LinkedHashMap<>()` masukin Map. Compiler
+    gak tau itu, jadi lu cast manual.
+
+(b) @SuppressWarnings("unchecked") buat matiin warning compiler:
+    "lu cast ke Map<String, Object> tapi generic-nya gak bisa di-cek
+    runtime (type erasure)". Ini "trust me bro" ke compiler.
+
+(c) Return Map yg udah ada (gak bikin baru).
+
+(d) Jalanin lambda → bikin LinkedHashMap baru → masukin ke bucket
+    pake key `s.vd()` → return Map baru itu.
+
+    Pattern ini = "ambil-atau-bikin". Nge-handle 2 case dalam 1 baris,
+    daripada nulis if-else manual.
+
+6.3
+(a) all-data cuma punya 3 query hard-coded. Schema-nya tau di compile
+    time. Worth bikin DTO (Vd51DetailData, Vd51Baris30DetailRow, dst).
+
+(b) all-data-full punya 98 file SQL, tiap query schema kolomnya beda
+    (baris30 punya kolom A, baris34 punya kolom B, ...). Bikin 98
+    DTO class = nyiksa diri. Plus, kalo author SQL nambahin file
+    baru, lu harus bikin DTO baru lagi. Map<String, Object> = drop file
+    .sql, langsung jalan.
+
+(c) Trade-off:
+
+    DTO (all-data):
+      MENANG: type-safe, IDE autocomplete, gampang refactor,
+              compile-time error kalo salah field.
+      KALAH:  rigid (tambah query = tambah class), boilerplate banyak,
+              gak praktis kalo schema dinamis.
+
+    Map<String, Object> (all-data-full):
+      MENANG: fleksibel (drop SQL file = otomatis muncul di response),
+              gak butuh class baru per query, cocok buat 98 query
+              dengan schema beda-beda.
+      KALAH:  no autocomplete, cast-cast manual buat consume,
+              salah typo key gak ke-detect compiler, dokumentasi
+              shape harus manual (gak ada class buat dibaca).
+
+    Aturan praktis: kalau jumlah shape kecil & stabil → DTO.
+                    kalau banyak / dinamis / pass-through → Map.
+
+
+=================================================================
+TIPS LANJUTAN
+=================================================================
+
+1. Kalau lagi mumet, BUKA DEBUGGER. Set breakpoint, run, expand
+   variable di IDE. Visual >>> imajinasi.
+
+2. Tiap ketemu generic ribet, baca **dari kanan**. Pelan.
+   Layer-by-layer. Jangan paksa langsung paham keseluruhan.
+
+3. Setiap @SuppressWarnings("unchecked") = sinyal "di sini ada cast
+   yg compiler gak verifikasi". Pas debug runtime error, cek tempat
+   ini dulu.
+
+4. Kalau lu mulai nulis `Map<String, Map<String, Map<...>>>` 4 level
+   lebih, mungkin udah waktunya bikin DTO. Atau pisah jadi method
+   helper. Nested terlalu dalam = susah dirawat.
+
+5. Lakuin level 4 ulang tiap minggu pake shape yg makin kompleks
+   sampai otomatis. Itu indikator paling jelas lu udah "nyangkut"
+   konsepnya.

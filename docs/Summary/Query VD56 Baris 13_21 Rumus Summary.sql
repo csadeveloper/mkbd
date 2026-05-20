@@ -1,0 +1,5 @@
+SELECT ACCOUNT, NVL(SUM(ENDBAL_DEBIT + ENDBAL_CREDIT), 0) AS BALANCE
+                            FROM MKBD.MKBD_BALANCE_SUMMARY
+                            WHERE GEN_DATE = TO_DATE('2026-04-21', 'yyyy-mm-dd') AND LENGTH(ACCOUNT) = 8 AND MKBD_FLAG = 0
+                            AND ACCOUNT = '10155101'
+GROUP BY ACCOUNT

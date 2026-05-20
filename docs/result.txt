@@ -1,0 +1,41 @@
+vd51 — wajib line (range pakai angka pertama)
+
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=30
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=34
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=35
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=38
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=43
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=65   → baris65_69.sql
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=71   → baris71_81.sql
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=88
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=103
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=104
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=105
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=106
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=107
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=108
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=109
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=110
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=111
+
+  vd52, vd56 — fetch all baris (genDate saja)
+
+  GET http://192.168.70.17:9090/api/mkbd/vd52?genDate=2026-04-08
+  GET http://192.168.70.17:9090/api/mkbd/vd56?genDate=2026-04-08
+
+  vd57b/c/d/e — fetch all baris per sub-folder
+
+  GET http://192.168.70.17:9090/api/mkbd/vd57b?genDate=2026-04-08
+  GET http://192.168.70.17:9090/api/mkbd/vd57c?genDate=2026-04-08
+  GET http://192.168.70.17:9090/api/mkbd/vd57d?genDate=2026-04-08
+  GET http://192.168.70.17:9090/api/mkbd/vd57e?genDate=2026-04-08
+
+  coa — mapper data
+
+  GET http://192.168.70.17:9090/api/mkbd/coa?genDate=2026-04-08
+
+  Negative tests (verifikasi error handling)
+
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08              → 400 (line wajib)
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=999     → 404 dengan list line valid
+  GET http://192.168.70.17:9090/api/mkbd/vd51?genDate=2026-04-08&line=66      → 404 (66 bukan first num; pakai 65)

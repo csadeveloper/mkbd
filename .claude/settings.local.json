@@ -5,7 +5,27 @@
       "Bash(cd \"D:\\\\mkbd master menu\\\\mkbd\" && ./mvnw dependency:tree -Dincludes=com.fasterxml.jackson.datatype:jackson-datatype-jsr310 2>/dev/null | grep jsr310 || mvn dependency:tree -Dincludes=com.fasterxml.jackson.datatype:jackson-datatype-jsr310 2>/dev/null | grep jsr310)",
       "Bash(./mvnw compile:*)",
       "Bash(xargs grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(./mvnw.cmd -q -DskipTests compile)",
+      "PowerShell(.\\\\mvnw.cmd -q -DskipTests compile 2>&1 | Select-Object -Last 80)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" -q -DskipTests compile 2>&1 | Select-Object -Last 100)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" -DskipTests compile 2>&1 | Select-Object -Last 60)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" clean compile -DskipTests 2>&1 | Select-Object -Last 80)",
+      "Bash(mkdir -p src/main/resources/sql/detail/__TRACKED_VAR__)",
+      "Bash(mkdir -p src/main/resources/sql/summary/__TRACKED_VAR__)",
+      "Bash(sed -i \"s/'2026-04-08'/:genDate/g\" src/main/resources/sql/detail/vd51/baris65_69.sql)",
+      "Bash(sed -i \"s/'2026-04-08'/:genDate/g\" src/main/resources/sql/summary/vd51/baris65_69.sql)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" clean compile -DskipTests 2>&1 | Select-Object -Last 30)",
+      "Read(//d/d/mkbd master menu/mkbd/**)",
+      "Bash(ls CLAUDE.md README.md .cursorrules)",
+      "Bash(ls .cursor/rules/)",
+      "Bash(ls .github/copilot-instructions.md)",
+      "Bash(ls src/main/java/com/ciptadana/mkbd_master_menu/database/oracle/entity/)",
+      "Bash(\"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" clean *)",
+      "Bash(\"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" compile *)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" -q clean compile -DskipTests)",
+      "Bash(D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd *)"
     ]
   }
 }

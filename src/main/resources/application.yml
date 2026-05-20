@@ -15,7 +15,7 @@ spring:
 
   oracle:
     datasource:
-      url: jdbc:oracle:thin:@10.10.1.173:1521:DEVDBA
+      url: jdbc:oracle:thin:@10.10.1.137:1521:DEVDBA
       username: denpasar
       password: password
       driverClassName: oracle.jdbc.OracleDriver

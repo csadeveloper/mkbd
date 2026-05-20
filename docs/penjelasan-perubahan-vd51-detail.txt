@@ -1,0 +1,225 @@
+PENJELASAN PERUBAHAN: vd51/detail jadi endpoint single-param
+=============================================================
+
+Konteks request:
+  FE komplain karena `vd51/detail` butuh dipanggil 17x (per-baris)
+  buat 1 tanggal. Solusinya: buang param `line`, samain pola sama
+  endpoint vd*/detail lain (vd52, vd56, vd57b–e, coa) yg cuma minta
+  `genDate` dan balikin semua baris sekaligus.
+
+File yang berubah:
+  1. controller/MkbdAllData/MkbdVdController.java   (signature endpoint)
+  2. service/MkbdAllData/MkbdVdService.java         (buang kode mati)
+
+
+-----------------------------------------------------------
+1. MkbdVdController.java — method vd51Detail()
+-----------------------------------------------------------
+
+SEBELUM:
+
+  @GetMapping("vd51/detail")
+  public ResponseEntity<Map<String, Object>> vd51Detail(
+          @RequestParam("genDate") String genDate,
+          @RequestParam("line") int line
+  ) {
+      return ResponseEntity.ok(service.getByLine("detail", "vd51", genDate, line));
+  }
+
+SESUDAH:
+
+  @GetMapping("vd51/detail")
+  public ResponseEntity<Map<String, Object>> vd51Detail(@RequestParam("genDate") String genDate) {
+      return ResponseEntity.ok(service.getByType("detail", "vd51", genDate));
+  }
+
+Yang berubah:
+  - Param `@RequestParam("line") int line` DIBUANG.
+  - Pemanggilan service ganti dari `getByLine(...)` ke `getByType(...)`.
+
+Kenapa:
+  - Param `line` tadinya wajib (gak ada defaultValue), jadi FE harus
+    looping 17x: line=30, 34, 35, 38, 43, 65, 71, 88, 103, 104, 105,
+    106, 107, 108, 109, 110, 111. Sekarang cukup 1 request.
+  - `getByType` udah dipake 7 endpoint detail/summary lain, jadi pola-
+    nya konsisten. FE-dev gak perlu inget bahwa vd51 spesial.
+
+URL setelah perubahan:
+  GET /api/mkbd/vd51/detail?genDate=2026-04-21
+
+Response shape (versi baru):
+  {
+    "baris30":   [ {...}, {...}, ... ],
+    "baris34":   [ ... ],
+    "baris35":   [ ... ],
+    "baris38":   [ ... ],
+    "baris43":   [ ... ],
+    "baris65_69":[ ... ],
+    "baris71_81":[ ... ],
+    "baris88":   [ ... ],
+    "baris103":  [ ... ],
+    "baris104":  [ ... ],
+    "baris105":  [ ... ],
+    "baris106":  [ ... ],
+    "baris107":  [ ... ],
+    "baris108":  [ ... ],
+    "baris109":  [ ... ],
+    "baris110":  [ ... ],
+    "baris111":  [ ... ]
+  }
+
+Key-nya = nama file SQL tanpa ekstensi (lihat
+src/main/resources/sql/detail/vd51/baris*.sql).
+Urutan key sesuai angka baris (30 dulu, 111 terakhir) — di-sort
+di service pake leadingLine().
+
+
+-----------------------------------------------------------
+2. MkbdVdService.java — buang `getByLine` & `availableLines`
+-----------------------------------------------------------
+
+Setelah controller gak panggil `getByLine` lagi, 2 method ini jadi
+dead code dan dihapus:
+
+DIHAPUS — getByLine(...):
+
+  public Map<String, Object> getByLine(String type, String vd, String genDate, int line) {
+      long start = System.currentTimeMillis();
+
+      SqlScript script = registry.getScripts().stream()
+              .filter(s -> type.equals(s.type()))
+              .filter(s -> vd.equals(s.vd()))
+              .filter(s -> Objects.equals(s.leadingLine(), line))
+              .findFirst()
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                      "No " + type + " baris found for vd=" + vd + " line=" + line
+                              + ". Available: " + availableLines(type, vd)));
+
+      List<Map<String, Object>> rows = scriptExecutor.run(script, genDate);
+
+      Map<String, Object> response = new LinkedHashMap<>();
+      response.put(script.baris(), rows);
+
+      log.info("vd={} {} line={} fetched in {} ms",
+              vd, type, line, System.currentTimeMillis() - start);
+      return response;
+  }
+
+Method ini dulu jalanin SATU query (sesuai line yg diminta), bukan
+17. Sekarang gak ada yg manggil → buang.
+
+DIHAPUS — availableLines(...):
+
+  private String availableLines(String type, String vd) {
+      TreeSet<Integer> lines = registry.getScripts().stream()
+              .filter(s -> type.equals(s.type()))
+              .filter(s -> vd.equals(s.vd()))
+              .map(SqlScript::leadingLine)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toCollection(TreeSet::new));
+      return lines.toString();
+  }
+
+Helper buat pesan error 404 ("Available: [30, 34, 35, ...]") di
+getByLine. Karena getByLine dibuang, helper ini juga ikut dibuang.
+
+IMPORT IKUT DIBERSIHKAN:
+
+  - import java.util.Objects;            (dipake di filter leadingLine)
+  - import java.util.TreeSet;            (dipake di availableLines)
+  - import java.util.stream.Collectors;  (dipake di availableLines)
+
+
+-----------------------------------------------------------
+3. Yang TETAP — getByType() (jantung endpoint sekarang)
+-----------------------------------------------------------
+
+Method `getByType(type, vd, genDate)` gak diubah, tapi sekarang dia
+yg melayani vd51/detail (sebelumnya cuma melayani 14 endpoint lain).
+
+Cara kerjanya, step-by-step:
+
+  1. Filter semua SqlScript dari registry yg cocok (type=detail, vd=vd51).
+     Registry ini di-load sekali pas startup oleh SqlScriptRegistry
+     (@PostConstruct), nge-scan classpath:sql/detail/vd51/*.sql.
+
+  2. Kalau hasilnya kosong → throw 404. (Untuk vd51 ada 17 file, jadi
+     gak akan kosong.)
+
+  3. Sort pake `Comparator.comparing(SqlScript::leadingLine, ...)`.
+     leadingLine() ekstrak angka dari nama file:
+       "baris30"    -> 30
+       "baris65_69" -> 65   (ambil angka pertama sebelum underscore)
+       "baris111"   -> 111
+     Tujuannya: response key urut natural, bukan alfabet
+     (alfabet bikin baris103 nongol sebelum baris30).
+
+  4. Submit semua 17 query paralel ke `mkbdQueryExecutor`:
+
+       Map<String, CompletableFuture<List<Map<String, Object>>>> futures = new LinkedHashMap<>();
+       for (SqlScript s : ordered) {
+           futures.put(s.key(), scriptExecutor.runAsync(s, genDate));
+       }
+       CompletableFuture.allOf(futures.values().toArray(CompletableFuture[]::new)).join();
+
+     `mkbdQueryExecutor` = pool size 6 (lihat AsyncConfig.java).
+     HikariCP max pool = 10 (lihat application.yml). Jadi 17 query
+     bakal antri 6-per-batch, sisa 4 koneksi free buat endpoint lain.
+
+  5. Iterate `ordered` lagi, buat response Map. Key-nya:
+       String key = s.baris() == null ? s.vd() : s.baris();
+     Untuk vd51/detail semua file punya `baris` (gak null), jadi
+     key-nya selalu "baris30", "baris34", dst.
+
+  6. Return Map<String, Object> ke controller, Spring serialisasi
+     ke JSON.
+
+
+-----------------------------------------------------------
+4. Dampak teknis
+-----------------------------------------------------------
+
+DB:
+  Total query yg di-eksekusi sama (17). Sebelumnya FE jalanin
+  17 request (serial / partial-parallel di browser). Sekarang
+  1 request, 17 query paralel di server.
+
+Connection pool:
+  Aman. Executor 6 < HikariCP 10. Worst case 6 query jalan
+  bersamaan, sisa 11 antri di executor queue (bukan blocking
+  Hikari).
+
+Cache:
+  Endpoint ini GAK punya @Cacheable. Kalau perlu cache, tambahin:
+    @Cacheable(value = CacheConfig.MKBD_VD_CACHE, key = "'vd51-detail-' + #genDate")
+  di method getByType (atau bikin method khusus). Hati-hati:
+  getByType juga dipake endpoint lain, kalau di-cache di level
+  method, key harus include type+vd biar gak nabrak.
+
+Backward-compatibility:
+  BREAKING CHANGE buat FE. Request lama (`?genDate=...&line=30`)
+  sekarang tetep balikin SEMUA 17 baris (param `line` di-ignore
+  Spring karena gak ada di signature). FE harus update kode-nya
+  buat ambil response yg shape-nya beda.
+
+
+-----------------------------------------------------------
+5. Test manual di Postman
+-----------------------------------------------------------
+
+  Method:  GET
+  URL:     http://localhost:9090/api/mkbd/vd51/detail
+  Params:  genDate = 2026-04-21
+
+Yg perlu dicek:
+  [✓] Status 200 OK.
+  [✓] Response punya 17 key: baris30, 34, 35, 38, 43, 65_69,
+      71_81, 88, 103–111.
+  [✓] Tiap value berupa array (boleh kosong kalau gak ada data).
+  [✓] Hit tanpa genDate → 400 Bad Request.
+  [✓] Hit dengan ?genDate=...&line=30 → tetep balikin 17 baris
+      (line di-ignore, BUKAN cuma baris30).
+  [✓] Log server muncul: "vd=vd51 detail all-baris fetched in N
+      ms (17 queries)".
+  [✓] Bandingin isi `baris30` dengan response endpoint lama
+      (sebelum perubahan) buat tanggal yg sama — harus identik.

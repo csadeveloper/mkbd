@@ -1,0 +1,6 @@
+ SELECT ACCOUNT, SUM(ENDBAL_DEBIT + ENDBAL_CREDIT) AS BALANCE
+                            FROM MKBD.MKBD_BALANCE_SUMMARY
+                            WHERE GEN_DATE = TO_DATE(:genDate, 'yyyy-mm-dd') AND LENGTH(ACCOUNT) = 8 AND MKBD_FLAG = 0
+                            AND ACCOUNT LIKE '10101%'
+ GROUP BY ACCOUNT
+ ORDER BY ACCOUNT
