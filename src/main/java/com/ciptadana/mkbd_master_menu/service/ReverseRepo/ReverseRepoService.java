@@ -20,8 +20,8 @@ public class ReverseRepoService {
     private final ReverseRepoJpaRepository reverseRepoJpaRepository;
 
     //    Muat daftar reverse_repo
-    public List<ReverseRepoListResponse> getReverseRepoList(String date) {
-        return reverseRepoJpaRepository.findReverseRepoList(date);
+    public List<ReverseRepoListResponse> getReverseRepoList(String startDate, String endDate) {
+        return reverseRepoJpaRepository.findReverseRepoList(startDate, endDate);
     }
 
     //    Insert reverse repo baru

@@ -1,0 +1,53 @@
+vd51 summary
+- baris 880, 105-111 tambahin name dari Denpasar account
+
+vd52 summary
+- baris 134 tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+- baris 162, 167, 168 tambahin name dari Denpasar account
+
+vd56 summary
+- baris 8, 17, 19 tambahin name dari Denpasar account
+
+vd57b summary
+- baris 9, tambahin name dari mkbd isincode
+
+vd51 detail
+- baris 29 tambahin name dari Denpasar account
+- baris 30, 35, 38, 88, 105-111 tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+- baris 10, 16, 71-81, 87, 91,   tambahin client name dari Denpasar client
+- baris 104 (coa) tambahin client name dari Denpasar client, yg rumus tambahin name dari Denpasar account
+
+vd52 detail
+- baris 122, 141, 159 (coa), 170 tambahin client name dari Denpasar client
+- baris 129, 134, 136, 159 (rumus), 162, 167, 168  tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+
+
+vd56 detail
+- baris 10&20 tambahin client name dari Denpasar client
+- baris 8, 17, 19 tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+
+
+vd57b detail
+- baris 13 20 55 tambahin name dari DENPASAR.CUSTODY_ACCOUNT,  tambahin client name dari Denpasar client
+- baris 16 22 51 57 tambahin name dari DENPASAR.accont,  tambahin client name dari Denpasar client
+
+
+vd57c detail
+- baris 31, 33 tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+
+vd57d detail
+- baris 11, 12, 33 tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+- baris 29,  tambahin name dari DENPASAR.CUSTODY_ACCOUNT tambahin client name dari Denpasar client
+
+vd57e detail
+- baris 33  tambahin name dari Denpasar account, tambahin client name dari Denpasar client
+
+ViT has also been applied in several previous studies to distinguish between real images and fake or AI images. The researchers in [10] applied ViT-Base/16 and EfficientNet-B0 in their experiments using a dataset of 60,802 images
+  including 30,401 real images from MSCOCO and 30,401 AI-generated images from SyntheticEye. The result is ViT obtained
+  98% accuracy while EfficientNet-B0 only achieved 96%. ViT can capture global patterns better in determining
+  AI-generated images, while EfficientNet-B0 is more efficient in training compared to ViT, so there is a trade-off
+  between the two models. Another study presented by Lamichhane also stated that ViT with 16x16 patch size and data
+  augmentation can outperform CNN architecture for AI image detection [12]. However, these studies only evaluated the
+  models separately and not yet fusing CNN and ViT into one unified architecture. So the question about how to combine
+  EfficientNet's local features with ViT's global attention is still an open question, and this becomes the motivation
+  for the proposed fusion strategy that combines EfficientNet-B3 and ViT through an adaptive gating mechanism.

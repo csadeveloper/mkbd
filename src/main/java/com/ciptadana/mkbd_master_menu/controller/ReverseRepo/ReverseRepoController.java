@@ -22,8 +22,10 @@ public class ReverseRepoController {
 
     @GetMapping("reverseRepo/list")
     public ResponseEntity<List<ReverseRepoListResponse>> getReverseRepoList(
-            @RequestParam("date") String date) {
-        return ResponseEntity.ok(reverseRepoService.getReverseRepoList(date));
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ) {
+        return ResponseEntity.ok(reverseRepoService.getReverseRepoList(startDate, endDate));
     }
 
     @PostMapping("reverseRepo/insert")

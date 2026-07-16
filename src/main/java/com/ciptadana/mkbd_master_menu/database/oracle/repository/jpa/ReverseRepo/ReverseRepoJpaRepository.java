@@ -19,11 +19,13 @@ public interface ReverseRepoJpaRepository extends JpaRepository<NativeEntity, St
     @Query(value = """
             SELECT ROWID AS ID, MKBD.TRX_REVERSE_REPO.*
             FROM MKBD.TRX_REVERSE_REPO
-            WHERE DUE_DATE >= TO_DATE(:date, 'YYYY-MM-DD')
-            ORDER BY NSHARE, INITIAL_DATE
+            WHERE RECDATE between to_date(:startDate,'dd-mm-yyyy')
+            and to_date(:endDate,'dd-mm-yyyy')
+            ORDER BY NSHARE, RECDATE
             """, nativeQuery = true)
     List<ReverseRepoListResponse> findReverseRepoList(
-            @Param("date") String date
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
     );
 
     @Transactional

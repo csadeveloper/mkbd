@@ -23,8 +23,8 @@ public class RepoService {
     private final RepoJpaRepository repoJpaRepository;
 
     //    Muat daftar repo
-    public List<RepoListResponse> getRepoList(String date) {
-        return repoJpaRepository.findRepoList(date);
+    public List<RepoListResponse> getRepoList(String startDate, String endDate) {
+        return repoJpaRepository.findRepoList(startDate, endDate);
     }
 
 //    counter party repo & reverse repo

@@ -24,8 +24,10 @@ public class RepoController {
 
     @GetMapping("repo/list")
     public ResponseEntity<List<RepoListResponse>> getRepoList(
-            @RequestParam("date") String date) {
-        return ResponseEntity.ok(repoService.getRepoList(date));
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate
+    ) {
+        return ResponseEntity.ok(repoService.getRepoList(startDate, endDate));
     }
 
     @GetMapping("repo/days")

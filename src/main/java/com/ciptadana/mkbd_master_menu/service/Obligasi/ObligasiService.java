@@ -42,10 +42,10 @@ public class ObligasiService {
 
 
     // Pencarian nama obligasi (F1)
-// Pencarian efek SBN  (F1)
-// Pencarian efek Hedging (F1)
-// Pencarian efek Repo (F1)
-// Pencarian efek Reverse Repo (F1)
+    // Pencarian efek SBN  (F1)
+    // Pencarian efek Hedging (F1)
+    // Pencarian efek Repo (F1)
+    // Pencarian efek Reverse Repo (F1)
     public ObligasiBondNameResponse getObligasiBondName(String code) {
         return obligasiJpaRepository.findObligasiBondName(code);
     }

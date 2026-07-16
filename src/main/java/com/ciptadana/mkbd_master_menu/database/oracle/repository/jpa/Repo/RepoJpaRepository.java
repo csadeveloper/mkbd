@@ -18,11 +18,13 @@ public interface RepoJpaRepository extends JpaRepository<NativeEntity, String> {
     @Query(value = """
             SELECT ROWID AS ID, MKBD.TRX_REPO.*
             FROM MKBD.TRX_REPO
-            WHERE DUE_DATE >= TO_DATE(:date, 'YYYY-MM-DD')
-            ORDER BY NSHARE, INITIAL_DATE
+            WHERE RECDATE between to_date(:startDate,'dd-mm-yyyy')
+            and to_date(:endDate,'dd-mm-yyyy')
+            ORDER BY NSHARE, RECDATE
             """, nativeQuery = true)
     List<RepoListResponse> findRepoList(
-            @Param("date") String date
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate
     );
 
     @Transactional
