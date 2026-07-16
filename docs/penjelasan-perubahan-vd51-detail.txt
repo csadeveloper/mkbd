@@ -1,4 +1,0 @@
-There are several models combined by the authors [11] where they combine Error Level Analysis (ELA) with CNN, VGG16, and ResNet using the dataset from CASIA and get 95% results in training accuracy and also
-  93% in validation accuracy. The authors [9] also conducted experiments combining algorithms from HOG and LBP with pre trained model from EfficientNet-B4 to differentiate paintings from digital images and get
-  quite high results, namely 97% in terms of accuracy. From all the experiments above, it can be concluded that EfficientNet is a strong CNN backbone for detecting noise in synthetic images, but this also
-  does not cover the fact that this backbone still relies on convolutional modeling of local patterns.

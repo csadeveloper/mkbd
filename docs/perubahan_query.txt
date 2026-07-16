@@ -41,13 +41,3 @@ vd57d detail
 
 vd57e detail
 - baris 33  tambahin name dari Denpasar account, tambahin client name dari Denpasar client
-
-ViT has also been applied in several previous studies to distinguish between real images and fake or AI images. The researchers in [10] applied ViT-Base/16 and EfficientNet-B0 in their experiments using a dataset of 60,802 images
-  including 30,401 real images from MSCOCO and 30,401 AI-generated images from SyntheticEye. The result is ViT obtained
-  98% accuracy while EfficientNet-B0 only achieved 96%. ViT can capture global patterns better in determining
-  AI-generated images, while EfficientNet-B0 is more efficient in training compared to ViT, so there is a trade-off
-  between the two models. Another study presented by Lamichhane also stated that ViT with 16x16 patch size and data
-  augmentation can outperform CNN architecture for AI image detection [12]. However, these studies only evaluated the
-  models separately and not yet fusing CNN and ViT into one unified architecture. So the question about how to combine
-  EfficientNet's local features with ViT's global attention is still an open question, and this becomes the motivation
-  for the proposed fusion strategy that combines EfficientNet-B3 and ViT through an adaptive gating mechanism.
