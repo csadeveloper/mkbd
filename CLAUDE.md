@@ -4,12 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & run
 
-System Maven is at `D:\Maven\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin\mvn.cmd`. The bundled `mvnw.cmd` fails on this machine because `JAVA_HOME` (`C:\Users\Ari Gunawan.JAKARTA\...`) contains a space — always invoke the system mvn directly:
+The bundled `mvnw.cmd` works — use it normally:
 
 ```bash
-& "D:\Maven\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin\mvn.cmd" clean compile -DskipTests
-& "D:\Maven\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
+.\mvnw.cmd clean compile -DskipTests
+.\mvnw.cmd spring-boot:run
 ```
+
+It used to fail with `'C:\Users\ari' is not recognized as an internal or external command`. The cause was the wrapper's own quoting, not `JAVA_HOME`: the user profile (`C:\Users\ari gunawan`) contains a space, so the Maven path the wrapper resolves under `~/.m2/wrapper/dists/` contains one too, and the generated `mvnw.cmd` invoked it unquoted. The invocation line is now patched to quote `%__MVNW_CMD__%`. **Regenerating the wrapper (`mvn wrapper:wrapper`) will silently revert this and reintroduce the failure** — re-apply the quotes if that happens.
+
+A system Maven also exists at `D:\Maven\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin\mvn.cmd` if you need to bypass the wrapper.
 
 App boots on port **9090**. Swagger UI at `/docs.html`.
 

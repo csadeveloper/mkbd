@@ -137,7 +137,7 @@ public interface ObligasiJpaRepository extends JpaRepository<NativeEntity, Strin
                 SELECT s.code, s.name, ROWNUM AS rn
                 FROM (
                     SELECT shares.code, shares.name
-                    FROM SHARES@PROD, COUNTRY@PROD
+                    FROM DENPASAR.SHARES, DENPASAR.COUNTRY
                     WHERE shares.country = country.id
                       AND shares.closured_date IS NULL
                       AND (:input IS NULL OR shares.name LIKE '%' ||  :input || '%')

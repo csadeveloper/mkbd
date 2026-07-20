@@ -25,7 +25,12 @@
       "Bash(\"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" clean *)",
       "Bash(\"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" compile *)",
       "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" -q clean compile -DskipTests)",
-      "Bash(D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd *)"
+      "Bash(D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd *)",
+      "PowerShell(& \"D:\\\\Maven\\\\apache-maven-3.9.9-bin\\\\apache-maven-3.9.9\\\\bin\\\\mvn.cmd\" clean)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Get-Content \"D:\\\\mkbd master menu\\\\mkbd\\\\.mvn\\\\wrapper\\\\maven-wrapper.properties\"; \"---\"; & powershell -noprofile \"& {`$scriptDir='D:\\\\mkbd master menu\\\\mkbd\\\\'; `$script='mvnw.cmd'; icm -ScriptBlock \\([Scriptblock]::Create\\(\\(Get-Content -Raw 'D:\\\\mkbd master menu\\\\mkbd\\\\mvnw.cmd'\\)\\)\\) -NoNewScope}\")",
+      "PowerShell(cmd.exe /c \"mvnw.cmd -Didea.version=2025.2 -Djansi.passthrough=true clean\")",
+      "PowerShell(cmd.exe /c \".\\\\mvnw.cmd -Didea.version=2025.2 -Djansi.passthrough=true clean\")"
     ]
   }
 }
